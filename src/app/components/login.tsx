@@ -1,23 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { labelErrorColor } from './constants';
+import { useLogin } from './use-login';
+
+type User = {
+    email: string;
+    password: string;
+};
+
+type UserInfo = {
+    email: string;
+    name: string;
+};
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [isDirty, setIsDirty] = useState(false);
+    const [user, setUser] = useState<User>();
     // make the validation simple for testing
     const isEmailValid = email.length > 0;
     const isPasswordValid = password.length > 0;
     const isFormValid = isEmailValid && isPasswordValid;
 
     const handleSignIn = (event: React.FormEvent) => {
+        setIsDirty(true);
         event.preventDefault();
 
         if (isFormValid) {
-            alert('Submitted!');
+            setUser({ email, password });
         }
-        console.log(email);
     };
+
+    const [userResult, error] = useLogin(
+        () =>
+            new Promise<UserInfo>((resolve) => {
+                setTimeout(() => {
+                    resolve({ email: 'tiennsloit@gmail.com', name: 'Tien' });
+                }, 2000);
+            }),
+        [user],
+        !!user
+    );
+
+    useEffect(() => {
+        console.log(userResult);
+    }, [userResult]);
 
     return (
         <div className='flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8'>
@@ -39,9 +66,9 @@ export const Login = () => {
                             <label
                                 htmlFor='email'
                                 className={`block text-sm font-medium leading-6  ${
-                                    isEmailValid
-                                        ? 'text-gray-900'
-                                        : labelErrorColor
+                                    !isEmailValid && isDirty
+                                        ? labelErrorColor
+                                        : 'text-gray-900'
                                 }`}
                             >
                                 Email address
@@ -65,9 +92,9 @@ export const Login = () => {
                             <label
                                 htmlFor='password'
                                 className={`block text-sm font-medium leading-6  ${
-                                    isPasswordValid
-                                        ? 'text-gray-900'
-                                        : labelErrorColor
+                                    !isPasswordValid && isDirty
+                                        ? labelErrorColor
+                                        : 'text-gray-900'
                                 }`}
                             >
                                 Password
@@ -115,6 +142,7 @@ export const Login = () => {
 
                         <div>
                             <button
+                                id='btnSubmit'
                                 type='submit'
                                 className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                             >
