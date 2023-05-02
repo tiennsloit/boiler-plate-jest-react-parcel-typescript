@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { labelErrorColor } from './constants';
 import { useLogin } from './use-login';
+import { useDispatch } from 'react-redux';
+
+import { useNavigate } from 'react-router-dom';
+import { AppAction } from '../root-reducer';
 
 type User = {
     email: string;
@@ -21,6 +25,8 @@ export const Login = () => {
     const isEmailValid = email.length > 0;
     const isPasswordValid = password.length > 0;
     const isFormValid = isEmailValid && isPasswordValid;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSignIn = (event: React.FormEvent) => {
         setIsDirty(true);
@@ -43,7 +49,10 @@ export const Login = () => {
     );
 
     useEffect(() => {
+        if (!userResult) return;
         console.log(userResult);
+        dispatch({ type: 'Login', payload: userResult } as AppAction);
+        navigate('/');
     }, [userResult]);
 
     return (

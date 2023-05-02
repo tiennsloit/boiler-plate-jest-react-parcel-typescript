@@ -2,7 +2,7 @@ import { DependencyList, useCallback, useEffect, useState } from 'react';
 import { User, UserInfo } from './interfaces';
 
 export const useLogin = (
-    load: () => Promise<any>,
+    load: () => Promise<UserInfo>,
     deps: DependencyList = [],
     condition = true
 ) => {

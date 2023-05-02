@@ -1,25 +1,35 @@
+const mockedUsedNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedUsedNavigate,
+}));
+
+// jest.mock('react-redux', () => {
+//     const ActualReactRedux = jest.requireActual('react-redux');
+//     return {
+//         ...ActualReactRedux,
+//         useDispatch: () => jest.fn(),
+//         useSelector: jest.fn().mockImplementation(() => {
+//             return {}; //any state;
+//         }),
+//     };
+// });
 import React from 'react';
-import {
-    fireEvent,
-    getByText,
-    render,
-    screen,
-    waitFor,
-} from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Login } from './login';
 import { labelErrorColor } from './constants';
-import { setupServer } from 'msw/node';
-import { BrowserRouter, Router } from 'react-router-dom';
-import { rest } from 'msw';
-import { HomePage } from '../home-page';
+
 import '@testing-library/jest-dom/extend-expect';
-import { createMemoryHistory } from 'history';
-import userEvent from '@testing-library/user-event';
-import { App } from '../app';
+import { Provider } from 'react-redux';
+import { configureStore } from '../store-config';
 
 describe('if user submit the form', () => {
     beforeEach(() => {
-        render(<Login />);
+        render(
+            <Provider store={configureStore()}>
+                <Login />
+            </Provider>
+        );
         const submitButon = screen.getByText('Sign in');
         fireEvent.click(submitButon);
     });
