@@ -4,6 +4,7 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedUsedNavigate,
 }));
 
+// in case we don't need to test the result from redux store
 // jest.mock('react-redux', () => {
 //     const ActualReactRedux = jest.requireActual('react-redux');
 //     return {
