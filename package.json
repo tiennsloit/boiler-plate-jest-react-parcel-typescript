@@ -11,7 +11,8 @@
     "parcel-dev": "parcel src/index.html --no-cache",
     "parcel": "tsc --noEmit && parcel build src/index.html --public-url ./ --no-source-maps",
     "start": "concurrently \"yarn css\" \"yarn parcel-dev\"",
-    "test": "jest --watch --silent=false"
+    "test": "jest",
+    "test-dev": "jest --watch"
   },
   "keywords": [],
   "author": "",

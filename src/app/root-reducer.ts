@@ -1,5 +1,5 @@
 import { UserInfo } from './components/interfaces';
-type AppState = {
+export type AppState = {
     user?: UserInfo;
 };
 
@@ -8,8 +8,13 @@ type ActionLogin = {
     payload: UserInfo;
 };
 
+export const initialState = {};
+
 export type AppAction = ActionLogin;
-export const rootReducer = (state: AppState = {}, action: AppAction) => {
+export const rootReducer = (
+    state: AppState = initialState,
+    action: AppAction
+) => {
     switch (action.type) {
         case 'Login':
             return { ...state, user: action.payload };

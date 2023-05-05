@@ -18,18 +18,19 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Login } from './login';
 import { labelErrorColor } from './constants';
-
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
-import { configureStore } from '../store-config';
+import { StoreProvider } from './store-provider';
+
+beforeEach(() => {
+    render(
+        <StoreProvider>
+            <Login />
+        </StoreProvider>
+    );
+});
 
 describe('if user submit the form', () => {
     beforeEach(() => {
-        render(
-            <Provider store={configureStore()}>
-                <Login />
-            </Provider>
-        );
         const submitButon = screen.getByText('Sign in');
         fireEvent.click(submitButon);
     });
@@ -44,6 +45,28 @@ describe('if user submit the form', () => {
         it('it should update the email label text with red color', () => {
             const labelEmailElement = screen.getByText('Email address');
             expect(labelEmailElement.className).toContain(labelErrorColor);
+        });
+    });
+});
+
+describe('if user input valid form data', () => {
+    describe('and submit the form', () => {
+        it('it should show success message', async () => {
+            const emailInput = screen.getByRole('email');
+            const passwordInput = screen.getByRole('password');
+
+            fireEvent.change(emailInput, {
+                target: { value: 'tiennsloit@gmail.com' },
+            });
+            fireEvent.change(passwordInput, {
+                target: { value: 'dummypassword' },
+            });
+
+            const submitButon = screen.getByText('Sign in');
+            fireEvent.click(submitButon);
+
+            await screen.findByText(/login success/i);
+            expect(screen.getByText(/login success/i)).toBeDefined();
         });
     });
 });
